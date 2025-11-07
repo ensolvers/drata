@@ -29,11 +29,11 @@ take_screenshot() {
   window_id=$2
 
   info "Taking screen screenshot of window..."
-  /usr/sbin/screencapture -l$window_id -x "$file_name"
-  echo "✅ Screenshot saved to: $file_name"
+    /usr/sbin/screencapture -l$window_id -x "$file_name"
+    echo "✅ Screenshot saved to: $file_name"
 
-  info "Closing window..."
-  osascript <<EOF
+    info "Closing window..."
+    osascript <<EOF
 tell application "System Events"
     repeat with p in (every process whose visible is true)
         try
@@ -50,9 +50,8 @@ EOF
 }
 
 confirm_gui_macos() {
-  /usr/bin/osascript <<'OSA' >/dev/null
-set dialogText to "This script will open the necessary windows to provide evidence to Drata. Do you want to continue?"
-display dialog dialogText with title "Permission Required" buttons {"Cancel", "Continue"} default button "Continue" with icon caution
+  /usr/bin/osascript >/dev/null <<'OSA'
+display dialog "This script will open the necessary windows to provide evidence to Drata. Do you want to continue?" with title "Permission Required" buttons {"Cancel", "Continue"} default button "Continue"
 OSA
 }
 
@@ -70,12 +69,12 @@ if ! confirm_gui_macos; then
 fi
 
 
-#Antivirus - Bitdefender
-open /Applications/BitdefenderVirusScanner.app
+#Antivirus - Avira
+open /Applications/Avira\ Security.app
 sleep 5
-pip3 install pyobjc-framework-Quartz
-bitdefender_window_id=$(python3 get-bitdefender-window.py)
-take_screenshot $antivirus_outfile $bitdefender_window_id
+avira_window_id=$(python3 get-avira-window.py | head -1)
+info "Avira window ID: $avira_window_id"
+take_screenshot $antivirus_outfile $avira_window_id
 
 
 #FileVault
