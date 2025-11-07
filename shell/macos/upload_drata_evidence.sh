@@ -69,12 +69,28 @@ if ! confirm_gui_macos; then
 fi
 
 
-#Antivirus - Avira
-open /Applications/Avira\ Security.app
-sleep 5
-avira_window_id=$(python3 get-avira-window.py | head -1)
-info "Avira window ID: $avira_window_id"
-take_screenshot $antivirus_outfile $avira_window_id
+#Antivirus - Detect and use Avira or Bitdefender
+if [ -d "/Applications/Avira Security.app" ]; then
+  info "Detected Avira Security"
+  open /Applications/Avira\ Security.app
+  sleep 5
+  antivirus_window_id=$(python3 get-avira-window.py | head -1)
+  info "Avira window ID: $antivirus_window_id"
+  take_screenshot $antivirus_outfile $antivirus_window_id
+
+elif [ -d "/Applications/BitdefenderVirusScanner.app" ]; then
+  info "Detected Bitdefender"
+  open /Applications/BitdefenderVirusScanner.app
+  sleep 5
+  antivirus_window_id=$(python3 get-bitdefender-window.py | head -1)
+  info "Bitdefender window ID: $antivirus_window_id"
+  take_screenshot $antivirus_outfile $antivirus_window_id
+
+else
+  error "No supported antivirus found (Avira Security or Bitdefender)"
+  error "Please install one of the supported antivirus applications"
+  exit 1
+fi
 
 
 #FileVault
