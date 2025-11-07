@@ -7,6 +7,9 @@ set -euo pipefail
 
 timestamp="$(date +"%Y-%m-%d_%H-%M-%S")"
 
+url_to_post=$1
+drata_key=$2
+
 encryption_outfile="$HOME/screenshot_disk_encryption_${timestamp}.png"
 lockscreen_outfile="$HOME/screenshot_lock_screen_${timestamp}.png"
 password_manager_outfile="$HOME/screenshot_password_manager_${timestamp}.png"
@@ -102,7 +105,8 @@ OSA
 
 info "Uploading documentation..."
 
-curl -X POST "http://localhost:8080/upload" \
+curl -X POST $url_to_post \
+-H "x-drata-key: ${drata_key}" \
 -H "Content-Type: multipart/form-data" \
 -F "encryptionFile=@${encryption_outfile}" \
 -F "lockscreenFile=@${lockscreen_outfile}" \
